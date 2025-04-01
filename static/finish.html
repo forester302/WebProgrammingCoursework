@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Timer</title>
+    <link href="css/style.css" rel="stylesheet" />
+    <script type="module" defer src="timer.js"></script>
+    <script type="module" defer src="finishers.js"></script>
+</head>
+
+<body>
+    <section id="timer">
+        <span id="hour">0</span>
+        <span id="minute">0</span>
+        <span id="second">0</span>
+        <span id="millisecond">0</span>
+    </section>
+
+    <table id="finishers">
+        <tr>
+            <th>Runner</th>
+            <th>Time</th>
+        </tr>
+        <!--Populate with finishers as it goes on, when race is over populate with rest of seen runners and DNF-->
+    </table>
+
+    <template id="finish-template">
+        <tr>
+            <td class="runner">N/A</td>
+            <td class="result">
+                <span class="hour">0</span>
+                <span class="minute">0</span>
+                <span class="second">0</span>
+                <span class="millisecond">0</span>
+            </td>
+        </tr>
+    </template>
+</body>
+
+</html>

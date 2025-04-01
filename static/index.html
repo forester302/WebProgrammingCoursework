@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Timer</title>
+    <link href="css/style.css" rel="stylesheet" />
+    <script defer type="module" src="timer.js"></script>
+    <script defer type="module" src="checkpoint.js"></script>
+</head>
+
+<body>
+    <button id="start">Start</button>
+    <!--<button id="pause">Pause</button>-->
+    <button id="stop">Stop</button>
+    <section id="timer">
+        <span id="hour">0</span>
+        <span id="minute">0</span>
+        <span id="second">0</span>
+        <span id="millisecond">0</span>
+    </section>
+
+    <select id="checkpoint"></select>
+    <button id="recordtime">Record Time</button>
+    <input type="number" name="runner" value="" id="runnernumber" />
+    <button id="recordrunner">Record Runner</button>
+
+    <section id="admin">
+        <input type="text" id="addcheckpoint" value="" />
+        <button id="addcheckpointbutton">Add checkpoint</button>
+    </section>
+</body>
+
+</html>

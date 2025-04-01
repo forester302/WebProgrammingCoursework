@@ -1,0 +1,16 @@
+Stage 1
+Timer
+ - Associate positions with times
+
+Stage 2
+People
+ - Associate people with positions
+
+Stage 3
+Display
+ - Display positions
+ - paginated data
+
+Stage 4
+Documentation
+ - use HTTP OPTION to describe API
