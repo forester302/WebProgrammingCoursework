@@ -1,43 +1,42 @@
-import {get} from "/network.js"
+import { get, get_with_race } from './network.js';
 
+async function addRunner(table, row_, startTime, name, time) {
+    const row = row_.content.cloneNode(true);
+    row.querySelector('.runner').innerText = name;
+    if (time !== undefined && time > 0) {
+        const time_ = time - startTime;
+        row.querySelector('.millisecond').textContent = time_ % 1000;
+
+        const secondsFull = Math.floor(time_ / 1000);
+        row.querySelector('.second').textContent = secondsFull % 60;
+
+        const minutesFull = Math.floor(secondsFull / 60);
+        row.querySelector('.minute').textContent = minutesFull % 60;
+
+        const hoursFull = Math.floor(minutesFull / 24);
+        row.querySelector('.hour').textContent = hoursFull % 24;
+    } else {
+        row.querySelector('.result').innerText = 'DNF';
+    }
+    table.appendChild(row);
+}
 async function updateFinishers() {
-	const json = await get("/timer");
-	const stopped = json.stopped;
-	const start_time = json.start_time;
+    const json = await get_with_race('timer', Number(window.localStorage.getItem("race")));
+    const stopped = json.stopped;
+    const startTime = json.start_time;
 
-	const finish_table = document.querySelector("#finishers");
+    const finishTable = document.querySelector('#finishers');
+    const row = document.querySelector('#finish-template');
 
-	let runners;
-	if (stopped) {
-		runners = await get("/get_runners");
-	} else {
-		runners = await get("/get_finishers");
-	}
+    let runners;
+    runners = await get_with_race('get_times', Number(window.localStorage.getItem("race")));
+    
     console.log(runners);
-	for (let runner in runners) {
-		const data = runners[runner];
-
-		const row = document.querySelector("#finish-template").content.cloneNode(true);
-		row.querySelector(".runner").innerText = data.runner;
-
-		if (data.checkpoint == 0) {
-			const time_ = data.time - start_time;
-			row.querySelector(".millisecond").textContent = time_ % 1000;
-
-			const seconds_full = Math.floor(time_ / 1000);
-			row.querySelector(".second").textContent = seconds_full % 60;
-
-			const minutes_full = Math.floor(seconds_full / 60);
-			row.querySelector(".minute").textContent = minutes_full % 60;
-
-			const hours_full = Math.floor(minutes_full / 24);
-			row.querySelector(".hour").textContent = hours_full % 24;
-		} else {
-			row.querySelector(".result").innerText = "DNF";
-		}
-
-		finish_table.appendChild(row);
-	}
+    // eslint-disable-next-line
+    for (const runner in runners) {
+        const data = runners[runner];
+        addRunner(finishTable, row, startTime, data.user_name, data.finish_time);
+    }
 }
 
 updateFinishers();

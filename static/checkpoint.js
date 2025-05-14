@@ -1,70 +1,84 @@
-import { get, post, post_nodefer } from "./network.js";
+import { get, get_with_race, set_with_race, post } from './network.js';
 
-let i_time = 0;
-function record_time() {
-    const checkpoint = document.querySelector("#checkpoint");
-    post("/time", {
+let race = Number(localStorage.getItem('race'));
+let i_time = await get_with_race("i_time", race);
+let i_runner = await get_with_race("i_runner", race);
+
+document.querySelector("#recordedtimes").innerText = "Times Recorded: " + i_time
+
+
+async function recordTime() {
+    // const checkpoint = document.querySelector('#checkpoint');
+    await post('/time', {
         i: i_time,
         time: Date.now(),
-        checkpoint: checkpoint.value,
-    })
-    i_time++;
-}
-
-let i_runner = 0;
-function record_runner() {
-    const runner = document.querySelector("#runnernumber");
-    const checkpoint = document.querySelector("#checkpoint");
-    post("/checkpoint", {
-        i: i_runner,
-        id: runner.value,
-        checkpoint: checkpoint.value,
+        //checkpoint: 1,
+        race,
     });
-    i_runner++;
+    i_time += 1;
+
+    document.querySelector("#recordedtimes").innerText = "Times Recorded: " + i_time
+    set_with_race("i_time", race, i_time);
 }
 
-function add_checkpoint() {
-    const name = document.querySelector("#addcheckpoint");
-    post("/add_checkpoint", {
+async function recordRunner() {
+    const runner = document.querySelector('#runnernumber');
+    // const checkpoint = document.querySelector('#checkpoint');
+    await post('/checkpoint', {
+        i: i_runner,
+        runner: Number(runner.value),
+        //checkpoint: 1,
+        // checkpoint: checkpoint.value,
+        race
+    });
+    i_runner += 1;
+    console.log(i_runner);
+    set_with_race("i_runner", race, i_runner);
+}
+
+function addCheckpoint() {
+    const name = document.querySelector('#addcheckpoint');
+    post('/add_checkpoint', {
         name: name.value,
     });
-    const dropdown = document.querySelector("#checkpoint");
-    const option = document.createElement("option");
+    const dropdown = document.querySelector('#checkpoint');
+    const option = document.createElement('option');
     option.value = name.value;
     option.innerText = name.value;
     dropdown.append(option);
 }
 
 document
-    .querySelector("#recordrunner")
-    .addEventListener("click", record_runner);
+    .querySelector('#recordrunner')
+    .addEventListener('click', recordRunner);
 
-document.querySelector("#recordtime").addEventListener("click", record_time);
+document.querySelector('#recordtime').addEventListener('click', recordTime);
 
 document
-    .querySelector("#addcheckpointbutton")
-    .addEventListener("click", add_checkpoint);
+    .querySelector('#addcheckpointbutton')
+    .addEventListener('click', addCheckpoint);
 
-async function get_checkpoints() {
-    let checkpoints = await get("/checkpoints");
+async function getCheckpoints() {
+    let checkpoints = await get('/checkpoints');
     if (checkpoints === null) {
-        checkpoints = JSON.parse(window.localStorage.getItem("checkpoints"));
+        checkpoints = JSON.parse(window.localStorage.getItem('checkpoints'));
     } else {
-        window.localStorage.setItem("checkpoints", JSON.stringify(checkpoints));
+        window.localStorage.setItem('checkpoints', JSON.stringify(checkpoints));
     }
     return checkpoints;
 }
 
 async function setupCheckpoints() {
-    const checkpoints = await get_checkpoints();
+    const checkpoints = await getCheckpoints();
 
-    const dropdown = document.querySelector("#checkpoint");
-    for (const cp in checkpoints) {
-        const option = document.createElement("option");
-        option.value = cp;
-        option.innerText = checkpoints[cp].display;
-        dropdown.append(option);
-    }
+    // const dropdown = document.querySelector('#checkpoint');
+    // eslint-disable-next-line
+    // for (const cp in checkpoints) {
+    //   const option = document.createElement('option');
+    //   option.value = cp;
+    //   option.innerText = checkpoints[cp].display;
+    //   dropdown.append(option);
+    // }
     console.log(checkpoints);
 }
 

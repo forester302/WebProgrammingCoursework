@@ -1,35 +1,29 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Timer</title>
-    <link href="css/style.css" rel="stylesheet" />
-    <script defer type="module" src="timer.js"></script>
-    <script defer type="module" src="checkpoint.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-    <button id="start">Start</button>
-    <!--<button id="pause">Pause</button>-->
-    <button id="stop">Stop</button>
-    <section id="timer">
-        <span id="hour">0</span>
-        <span id="minute">0</span>
-        <span id="second">0</span>
-        <span id="millisecond">0</span>
-    </section>
+    <ul id="race-list"></ul>
 
-    <select id="checkpoint"></select>
-    <button id="recordtime">Record Time</button>
-    <input type="number" name="runner" value="" id="runnernumber" />
-    <button id="recordrunner">Record Runner</button>
-
-    <section id="admin">
-        <input type="text" id="addcheckpoint" value="" />
-        <button id="addcheckpointbutton">Add checkpoint</button>
+    <button id="create_race">Create Race</button>
+    <section id="add_race" class="hidden">
+        <input type="text" id="race_name">
+        <button id="create">Create</button>
     </section>
 </body>
+<script type="module" src="races.js"></script>
+
+<template id="race-template">
+    <li>
+        <button class="name"></button>
+        <input type="number" class="id" hidden>
+    </li>
+</template>
 
 </html>

@@ -1,112 +1,140 @@
-import express from "express";
-import path from "path";
-import * as db from "./db.js";
+import express from 'express';
+import * as db from './db.js';
 
 const app = express();
 const port = 8080;
 
-db.create_database();
+db.createDatabase();
 
-let runners = {
-	0: { name: "Ben" },
-	1: { name: "Jeff" },
-};
-
-let races = [
-	{
-		checkpoints: [{ display: "End" }],
-		end: 0,
-		times: {
-			0: {
-				runner: 0,
-				checkpoint: 0,
-			},
-		},
-		checks: {
-			0: {
-				time: 0,
-				checkpoint: 0,
-			},
-		},
-		runners: [0],
-	},
-];
-
-function set_timer(req, res) {
-	const timer = req.body;
-	res.send(db.update_timer(1, timer));
+function setTimer(req, res) {
+  const timer = req.body;
+  res.send(db.updateTimer(req.body.race, timer));
 }
 
-function get_timer(req, res) {
-	res.send(db.get_timer(1));
+function getTimer(req, res) {
+  res.send(db.getTimer(req.body.race));
 }
 
-function activate_checkpoint(req, res) {
-	if (!(req.body.runner in races[0].runners)) {
-		res.status(404).send("Runner Not Found");
-		return;
-	}
-	races[0].times.push(req.body);
-	res.send({ success: true });
+function activateCheckpoint(req, res) {
+  //const x = db.runnerCanActivateCheckpoint(req.body.runner, req.body.checkpoint);
+  // res.status(200).send(x);
+  //if (!(x)) {
+    //res.status(404).send(x);
+    //return;
+  //}
+  db.addPositionFromRace(req.body.i, req.body.runner, req.body.race);
+  res.send({ success: true });
 }
 
-function time_checkpoint(req, res) {
-    db.add_time(req.body);
+function timeCheckpoint(req, res) {
+  db.addTimeFromRace(req.body.i, req.body.time, req.body.race);
+  res.send({ success: true });
 }
 
-function add_checkpoint(req, res) {
-    db.add_checkpoint(1, req.body.name, false);
+function addCheckpoint(req, res) {
+  db.addCheckpoint(1, req.body.name, false);
+  res.send({ success: true });
 }
 
-function get_checkpoint(req, res) {
-	res.send(db.get_checkpoints(1));
+function getCheckpoint(req, res) {
+  res.send(db.getCheckpoints(1));
 }
 
-function get_finishers(req, res) {
-	let finishers = [];
-	for (let i in races[0].times) {
-		if (races[0].times[i].checkpoint == races[0].end) {
-			const time = races[0].times[i];
-			if (i in races[0].checks) {
-				time.time = races[0].checks[i].time;
-			}
-			finishers.push(time);
-		}
-	}
-	res.send(races[0].times); //finishers);
+function getFinishers(req, res) {
+  res.send(db.getFinishers());
 }
 
-function get_runners(req, res) {
-	res.send(races[0].runners);
+function getRunners(req, res) {
+  res.send(db.getRunners(req.body.race));
 }
 
-function get_runners_from_id(req, res) {
-	let ids = req.body;
-	let r = [];
-	for (let id of ids) {
-		r.push(runners[id]);
-	}
-	res.send(r);
+function getAccessLevel(req, res) {
+  const user = req.body.user;
+  const race = req.body.race;
+  const role = db.getUserRole(race, user);
+  res.send([role]);
+}
+
+function getRaces(req, res) {
+  res.send(db.getRaces());
+}
+
+function addRace(req, res) {
+  const name = req.body.name;
+  const user = req.body.user;
+  db.addRace(name, user);
+  res.send({ success: true });
+}
+
+function join(req, res) {
+  const user = req.body.user;
+  const race = req.body.race;
+  const role = req.body.role;
+  db.joinRace(race, user, role);
+  res.send({ success: true });
+}
+
+function addUserToRace(req, res) {
+  const name = req.body.name;
+  const race = req.body.race;
+  const id = db.addUser(name);
+  db.joinRace(race, id, 'runner');
+  res.send({ id });
+}
+
+function getIRunner(req, res) {
+    const race = req.body.race;
+    let i = db.getIRunner(race);
+    res.send({ value: i.id + 1 })
+}
+
+function getITime(req, res) {
+    const race = req.body.race;
+    let i = db.getITime(race);
+    res.send({ value: i.id + 1 })
+}
+
+function getTimes(req, res) {
+    const race = req.body.race;
+    res.send(db.getTimes(race));
 }
 
 app.use(express.json());
 
-app.post("/timer", set_timer);
-app.get("/timer", get_timer);
-app.post("/checkpoint", activate_checkpoint); // set a runner at a checkpoint
-app.post("/time", time_checkpoint);
-app.post("/add_checkpoint", add_checkpoint);
-app.get("/checkpoints", get_checkpoint); // return a list of checkpoints
-app.get("/get_finishers", get_finishers); // return a list of runners who have finished the current race
-app.get("/get_runners", get_runners); // return a list of runner ids for runners who are registered for this race
-app.post("/get_runners", get_runners_from_id); // return a list of runners for a given list of ids
+app.post('/set_timer', setTimer);
+app.post('/timer', getTimer);
+app.post('/checkpoint', activateCheckpoint); // set a runner at a checkpoint
+app.post('/time', timeCheckpoint);
+app.post('/add_checkpoint', addCheckpoint);
+app.get('/checkpoints', getCheckpoint); // return a list of checkpoints
+app.get('/get_finishers', getFinishers); // return a list of runners who have finished the current race
+app.post('/get_times', getTimes);
+app.post('/get_runners', getRunners); // return a list of runner ids for runners who are registered for this race
+app.post('/access_level', getAccessLevel); // return a list of runners for a given list of ids
+app.get('/get_races', getRaces);
+app.post('/add_race', addRace);
+app.post('/join', join);
+app.post('/add_user_to_race', addUserToRace);
+app.post('/i_runner', getIRunner);
+app.post('/i_time', getITime);
 
 app.use(
-	express.static("static", {
-		extensions: ["htm", "html"],
-	}),
+  express.static('static', {
+    extensions: ['htm', 'html'],
+  }),
 );
 
-app.listen(port, () => {
-	console.log(`Listening on port: ${port}`);
-});
+  console.log(`Listening on port: ${port}`);
+// Delete for prop
+import https from 'https';
+import fs from 'fs';
+
+const options = {
+    key: fs.readFileSync('cert/key.pem'),
+    cert: fs.readFileSync('cert/cert.pem'),
+};
+
+//app.listen(port, () => {
+https.createServer(options, app).listen(port, '0.0.0.0', () => {
+  console.log(`Listening on port: ${port}`);
+})

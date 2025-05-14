@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Timer</title>
+    <link href="css/style.css" rel="stylesheet" />
+    <script defer type="module" src="timer.js"></script>
+    <script defer type="module" src="checkpoint.js"></script>
+    <script defer type="module" src="account.js"></script>
+    <script defer type="module" src="race.js"></script>
+</head>
+
+<body>
+    <nav>
+        <button id="back">Back</button>
+        <button id="board">Board</button>
+    </nav>
+    <main>
+        <button id="start" class="hidden">Start</button>
+        <section id="timer">
+            <span id="hour">0</span>
+            <span id="minute">0</span>
+            <span id="second">0</span>
+            <span id="millisecond">0</span>
+        </section>
+
+        <section id="join" class="hidden">
+            <button id="join-as-helper">Join As Helper</button>
+            <button id="join-as-runner">Join as Runner</button>
+        </section>
+
+        <section id="runner" class="hidden">
+            <button id="step-down-runner">Stop running</button>
+        </section>
+
+        <section id="helper" class="hidden">
+            <select id="checkpoint" hidden></select>
+            <button id="recordtime">Record Time</button>
+            <span id="recordedtimes">Times Recorded: <span id="recordedtimes"></span></span>
+            <label for="runnernumber">Id Number</label>
+            <input type="number" name="runner" value="" id="runnernumber" />
+            <button id="recordrunner">Record Runner</button>
+
+            <label for="adduser">Name</label>
+            <input type="text" name="adduser" id="adduser">
+            <button id="adduserbutton">Add</button>
+
+
+            <button id="step-down-helper">Step Down As Helper</button>
+
+            <table id="userstable">
+                <tr id="userstableheader">
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </table>
+        </section>
+
+        <section id="admin">
+            <input type="text" id="addcheckpoint" value="" hidden />
+            <button id="addcheckpointbutton" hidden>Add checkpoint</button>
+        </section>
+    </main>
+    <section id="users">
+        <button id="Admin">Admin</button>
+        <button id="Helper">Helper</button>
+        <button id="User1">User1</button>
+        <button id="User2">User2</button>
+    </section>
+
+    <template id="usertablerowtemplate">
+        <tr>
+            <td class="userid"></td>
+            <td class="username"></td>
+        </tr>
+    </template>
+</body>
+
+</html>

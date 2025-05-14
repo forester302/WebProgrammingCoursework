@@ -1,0 +1,124 @@
+.hidden {
+    display: none !important;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    margin: 0px;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+}
+
+nav {
+    display: flex;
+    gap: 1rem;
+    background-color: black;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+
+    button {
+        padding: 10px 16px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 8px;
+        transition: background-color 0.3s;
+
+    }
+}
+
+nav button:hover {
+    background-color: #0056b3;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    #start {
+        width: 20%;
+    }
+
+    #timer {
+        gap: 0rem;
+        justify-content: center;
+        font-family: monospace;
+        font-size: 2rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+
+        span {
+            margin: 0;
+            background-color: #222;
+            color: #fff;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            min-width: 2ch;
+            text-align: center;
+        }
+    }
+
+    #helper {
+        display: flex;
+        flex-direction: column;
+
+        #recordedtimes {
+            margin-bottom: 50px;
+        }
+
+        #recordrunner {
+            margin-bottom: 50px;
+        }
+
+        #adduserbutton {
+            margin-bottom: 10px;
+        }
+
+    }
+}
+
+#users {
+    position: fixed;
+    right: 0;
+    top: 20px;
+    background-color: #b0b0b0;
+    width: 110px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+
+    button {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: none;
+        background-color: #007bff;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #ddd
+}

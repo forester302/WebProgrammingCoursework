@@ -3,14 +3,21 @@ CREATE TABLE IF NOT EXISTS users (
     name TEXT
 );
 
+INSERT INTO users (name) VALUES
+    ('Admin'),
+    ('Helper'),
+    ('User1'),
+    ('User2');
+
 CREATE TABLE IF NOT EXISTS races (
     id INTEGER PRIMARY KEY,
+    name TEXT,
     owner INTEGER,
     start_time INTEGER DEFAULT 0,
     stopped_at INTEGER DEFAULT 0,
     stopped BOOLEAN DEFAULT TRUE,
-    
-    FOREIGN KEY(owner) REFERENCES users(id)
+
+    FOREIGN KEY (owner) REFERENCES users (id)
 );
 
 CREATE TABLE IF NOT EXISTS checkpoints (
@@ -19,16 +26,17 @@ CREATE TABLE IF NOT EXISTS checkpoints (
     display TEXT,
     isend BOOLEAN DEFAULT 0 NOT NULL CHECK (isend IN (0, 1)),
 
-    FOREIGN KEY(race) REFERENCES races(id)
+    FOREIGN KEY (race) REFERENCES races (id)
 );
 
 CREATE TABLE IF NOT EXISTS user_races (
     user INTEGER,
     race INTEGER,
-    
-    FOREIGN KEY(user) REFERENCES users(id),
-    FOREIGN KEY(race) REFERENCES races(id),
-    PRIMARY KEY(user, race)
+    role TEXT,
+
+    FOREIGN KEY (user) REFERENCES users (id),
+    FOREIGN KEY (race) REFERENCES races (id),
+    PRIMARY KEY (user, race)
 );
 
 CREATE TABLE IF NOT EXISTS times (
@@ -43,7 +51,7 @@ CREATE TABLE IF NOT EXISTS positions (
     id INTEGER,
     user INTEGER,
     race INTEGER,
-    FOREIGN KEY(user) REFERENCES user(id),
+    FOREIGN KEY(user) REFERENCES users(id),
     FOREIGN KEY(race) REFERENCES races(id),
     PRIMARY KEY (id, race),
     UNIQUE(user, race)

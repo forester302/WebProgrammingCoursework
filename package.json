@@ -13,5 +13,10 @@
   "dependencies": {
     "express": "^4.21.2",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-portsoc": "^1.0.1",
+    "globals": "^16.1.0"
   }
 }
