@@ -4,7 +4,8 @@ let race = Number(localStorage.getItem('race'));
 let i_time = await get_with_race("i_time", race);
 let i_runner = await get_with_race("i_runner", race);
 
-document.querySelector("#recordedtimes").innerText = "Times Recorded: " + i_time
+document.querySelector("#recordedtimes").innerText = "Times Recorded: " + (i_time - 1)
+document.querySelector("#recordedrunners").innerText = "Runners Recorded: " + (i_runner - 1)
 
 
 async function recordTime() {
@@ -17,7 +18,7 @@ async function recordTime() {
     });
     i_time += 1;
 
-    document.querySelector("#recordedtimes").innerText = "Times Recorded: " + i_time
+    document.querySelector("#recordedtimes").innerText = "Times Recorded: " + (i_time - 1)
     set_with_race("i_time", race, i_time);
 }
 
@@ -32,7 +33,7 @@ async function recordRunner() {
         race
     });
     i_runner += 1;
-    console.log(i_runner);
+    document.querySelector("#recordedrunners").innerText = "Runners Recorded: " + (i_runner - 1)
     set_with_race("i_runner", race, i_runner);
 }
 

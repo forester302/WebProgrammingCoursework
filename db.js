@@ -26,7 +26,7 @@ function addRace(name, owner) {
 
     const stmt2 = db.prepare('INSERT INTO user_races (race, user, role) VALUES (?, ?, ?)');
     stmt2.run(raceid, owner, 'owner');
-
+    
     addCheckpoint(raceid, 'End', true);
 
     return raceid;
@@ -247,6 +247,44 @@ function getITime(race) {
     )
     return stmt.get(race)
 }
+
+function addUserBatch(users, race) {
+    const userIds = []
+
+    const addUserStmt = db.prepare(`INSERT INTO users (name) VALUES (?)`)
+    const joinRaceStmt = db.prepare(`INSERT OR IGNORE INTO user_races (race, user, role) VALUES (?, ?, ?)`)
+    const exisitingUserStmt = db.prepare(`SELECT id FROM users WHERE id = ?`)
+    const addUserWithId = db.prepare(`INSERT INTO users (id, name) VALUES (?, ?)`)
+
+    for (const user of users) {
+        let userId;
+        console.log(user);
+
+        if (user.id != null && user.id != undefined && user.id !== "") {
+            const existingUser = exisitingUserStmt.get(user.id);
+            if (!existingUser) {
+                addUserWithId.run(user.id, user.name);
+                userId = user.id;
+            } else {
+                userId = user.id;
+            }
+        } else {
+            console.log("Adding User")
+            const res = addUserStmt.run(user.name);
+            userId = res.lastInsertRowid;
+        }
+
+        console.log(userId)
+        joinRaceStmt.run(race, userId, 'runner')
+
+        userIds.push({
+            id: userId,
+            name: user.name
+        })
+    }
+
+    return userIds
+}
 export {
     createDatabase,
     addUser,
@@ -270,5 +308,6 @@ export {
     getRunners,
     getTimes,
     getRunnersWithTimes,
-    getIRunner, getITime
+    getIRunner, getITime,
+    addUserBatch
 };

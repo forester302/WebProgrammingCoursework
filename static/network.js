@@ -4,31 +4,48 @@ function setupLocalStorage(loc, def) {
 }
 
 function setupStorage() {
-  setupLocalStorage('defer', '[]')
-  setupLocalStorage('get_runners', '{}')
-  setupLocalStorage('checkpoints', '{}')
-  setupLocalStorage('i_runner', '{}')
-  setupLocalStorage('i_time', '{}')
-  setupLocalStorage('get_times', '{}')
-  setupLocalStorage('timer', '{}')
+    setupLocalStorage('defer', '[]')
+    setupLocalStorage('get_runners', '{}')
+    setupLocalStorage('checkpoints', '{}')
+    setupLocalStorage('i_runner', '{}')
+    setupLocalStorage('i_time', '{}')
+    setupLocalStorage('get_times', '{}')
+    setupLocalStorage('timer', '{}')
+}
+
+function clearStorage() {
+    window.localStorage.setItem('defer', '[]')
+    window.localStorage.setItem('get_runners', '{}')
+    window.localStorage.setItem('get_finishers', '{}')
+    window.localStorage.setItem('checkpoints', '{}')
+    window.localStorage.setItem('i_runner', '{}')
+    window.localStorage.setItem('i_time', '{}')
+    window.localStorage.setItem('get_times', '{}')
+    window.localStorage.setItem('timer', '{}')
+    window.location.href = "/"
+}
+
+let clearBtn = document.querySelector('#clear');
+if (clearBtn) {
+    clearBtn.addEventListener('click', clearStorage)
 }
 
 async function get(url) {
-  if (navigator.onLine) {
-    const data = await (await fetch(url)).json();
-    window.localStorage.setItem(url.slice(1), JSON.stringify(data));
-    return data;
-  }
-  const local = window.localStorage.getItem(url.slice(1));
-  if (!(local === null) && local !== '') {
-    return JSON.parse(local);
-  }
-  return null; // As we cannot get any data
+    if (navigator.onLine) {
+        const data = await (await fetch(url)).json();
+        window.localStorage.setItem(url.slice(1), JSON.stringify(data));
+        return data;
+    }
+    const local = window.localStorage.getItem(url.slice(1));
+    if (!(local === null) && local !== '') {
+        return JSON.parse(local);
+    }
+    return null; // As we cannot get any data
 }
 
 async function get_with_race(url, race) {
-    let data = await postNoDefer(url, {race});
-    if (data.value) {
+    let data = await postNoDefer(url, { race });
+    if (data !== null && data.value) {
         data = data.value;
     }
     let storage = JSON.parse(window.localStorage.getItem(url));
@@ -49,46 +66,50 @@ async function set_with_race(url, race, data) {
 }
 
 async function post(url, body) {
-  const data = await postNoDefer(url, body);
-  if (data != null) return data;
+    const data = await postNoDefer(url, body);
+    if (data != null) return data;
 
-  // Append request to list of requests to send when online in local storage
-  const deferList = JSON.parse(window.localStorage.getItem('defer'));
-  deferList.push({
-    url,
-    body,
-  });
-  window.localStorage.setItem('defer', JSON.stringify(deferList));
+    // Append request to list of requests to send when online in local storage
+    const deferList = JSON.parse(window.localStorage.getItem('defer'));
+    deferList.push({
+        url,
+        body,
+    });
+    window.localStorage.setItem('defer', JSON.stringify(deferList));
 
-  return null; // as we cannot get any data (use defaults / from local storage)
+    return null; // as we cannot get any data (use defaults / from local storage)
 }
 
 async function postNoDefer(url, body) {
-  if (!navigator.onLine) return null;
-  console.log('sending req');
-  return await (
-    await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-  ).json();
+    if (!navigator.onLine) return null;
+    console.log('sending req');
+    try {
+        return await (
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            })
+        ).json();
+    } catch (e) {
+        return null
+    }
 }
 
 function handleOnline() {
-  const deferedPost = JSON.parse(window.localStorage.getItem('defer'));
-  window.localStorage.setItem('defer', '[]');
+    const deferedPost = JSON.parse(window.localStorage.getItem('defer'));
+    window.localStorage.setItem('defer', '[]');
 
-  for (const p of deferedPost) {
-    post(p.url, p.body);
-  }
+    for (const p of deferedPost) {
+        post(p.url, p.body);
+    }
 }
 
 
 async function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    await navigator.serviceWorker.register('./sw.js');
-  }
+    if ('serviceWorker' in navigator) {
+        await navigator.serviceWorker.register('./sw.js');
+    }
 }
 registerServiceWorker();
 

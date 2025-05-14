@@ -75,7 +75,7 @@ main {
             margin-bottom: 50px;
         }
 
-        #recordrunner {
+        #recordedrunners {
             margin-bottom: 50px;
         }
 
@@ -121,4 +121,12 @@ th, td {
     text-align: center;
     padding: 5px;
     border: 1px solid #ddd
+}
+
+h3, h5 {
+    margin: 0;
+}
+
+#upload-csv {
+    margin-bottom: 20px;
 }

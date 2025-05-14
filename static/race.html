@@ -10,12 +10,14 @@
     <script defer type="module" src="checkpoint.js"></script>
     <script defer type="module" src="account.js"></script>
     <script defer type="module" src="race.js"></script>
+    <script defer type="module" src="upload.js"></script>
 </head>
 
 <body>
     <nav>
-        <button id="back">Back</button>
-        <button id="board">Board</button>
+        <button id="back">Home</button>
+        <button id="board">Finish Board</button>
+        <button id="clear">Clear Data</button>
     </nav>
     <main>
         <button id="start" class="hidden">Start</button>
@@ -23,7 +25,7 @@
             <span id="hour">0</span>
             <span id="minute">0</span>
             <span id="second">0</span>
-            <span id="millisecond">0</span>
+            <!--<span id="millisecond">0</span>-->
         </section>
 
         <section id="join" class="hidden">
@@ -38,11 +40,21 @@
         <section id="helper" class="hidden">
             <select id="checkpoint" hidden></select>
             <button id="recordtime">Record Time</button>
-            <span id="recordedtimes">Times Recorded: <span id="recordedtimes"></span></span>
+            <span id="recordedtimes">Times Recorded: </span>
             <label for="runnernumber">Id Number</label>
             <input type="number" name="runner" value="" id="runnernumber" />
             <button id="recordrunner">Record Runner</button>
+            <span id="recordedrunners">Runners Recorded: </span>
 
+            <h3>Runner Upload</h3>
+            <section id="csv-upload-container">
+                <h5>Runner Batch Upload</h5>
+                <input type="file" id="csv-upload" , accept=".csv">
+                <button id="upload-csv">Upload Runners</button>
+                <span id="upload-status"></span>
+            </section>
+
+            <h5>Runner Manual Add</h5>
             <label for="adduser">Name</label>
             <input type="text" name="adduser" id="adduser">
             <button id="adduserbutton">Add</button>
@@ -50,12 +62,6 @@
 
             <button id="step-down-helper">Step Down As Helper</button>
 
-            <table id="userstable">
-                <tr id="userstableheader">
-                    <th>ID</th>
-                    <th>Name</th>
-                </tr>
-            </table>
         </section>
 
         <section id="admin">
@@ -63,12 +69,22 @@
             <button id="addcheckpointbutton" hidden>Add checkpoint</button>
         </section>
     </main>
+
     <section id="users">
         <button id="Admin">Admin</button>
         <button id="Helper">Helper</button>
         <button id="User1">User1</button>
         <button id="User2">User2</button>
     </section>
+
+    <template id="userstabletemplate">
+        <table id="userstable">
+            <tr id="userstableheader">
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </table>
+    </template>
 
     <template id="usertablerowtemplate">
         <tr>

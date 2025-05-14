@@ -5,12 +5,12 @@ function getTimerDom() {
     const hour = document.querySelector('#hour');
     const minute = document.querySelector('#minute');
     const second = document.querySelector('#second');
-    const ms = document.querySelector('#millisecond');
-    return { hourEl: hour, minuteEl: minute, secondEl: second, msEl: ms };
+    //const ms = document.querySelector('#millisecond');
+    return { hourEl: hour, minuteEl: minute, secondEl: second };
 }
 
 function updateTimerDom(timer) {
-    const { hourEl, minuteEl, secondEl, msEl } = getTimerDom();
+    const { hourEl, minuteEl, secondEl } = getTimerDom();
     // if (timer.paused) return;
     let time;
     if (timer.stopped) {
@@ -18,7 +18,7 @@ function updateTimerDom(timer) {
     } else {
         time = Date.now() - timer.start_time; // - timer.skipped;
     }
-    msEl.textContent = (time % 1000).toString().padStart(3, '0') + 'ms';
+    //msEl.textContent = (time % 1000).toString().padStart(3, '0') + 'ms';
     const secondsFull = Math.floor(time / 1000);
     secondEl.textContent = (secondsFull % 60).toString().padStart(2, '0') + 's';
     const minutesFull = Math.floor(secondsFull / 60);
@@ -47,7 +47,8 @@ async function toggleTimer(timer) {
 }
 
 async function syncTimer(timer) {
-    const res = await postNoDefer(timer);
+    timer.race = race
+    const res = await postNoDefer('/set_timer', timer);
     if (res != null) {
         timer.start_timer = res.start_time;
         timer.stopped_at = res.stopped_at;
@@ -61,7 +62,7 @@ function setupTimerEvents(timer) {
     if (!timer.stopped) {
         button.innerText = 'Stop';
     }
-    if (button === undefined) return;
+    if (button === undefined || button === null) return;
     button.addEventListener('click', () => toggleTimer(timer));
 
     console.log('timer setup');
@@ -72,6 +73,7 @@ async function setupTimer() {
     if (timer === null) timer = JSON.parse(localStorage.getItem('timer'))[race];
 
     setInterval(() => updateTimerDom(timer), 1);
+    setInterval(async () => timer = await get_with_race('timer', race), 1000)
 
     window.addEventListener('online', () => syncTimer(timer));
 
@@ -87,3 +89,5 @@ async function updateTimer(timer) {
 }
 
 setupTimer();
+
+

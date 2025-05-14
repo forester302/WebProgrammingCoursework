@@ -11,21 +11,29 @@
 </head>
 
 <body>
+    <nav>
+        <button id="clear">Clear Data</button>
+    </nav>
     <main>
         <section id="timer">
             <span id="hour">0</span>
             <span id="minute">0</span>
             <span id="second">0</span>
-            <span id="millisecond">0</span>
+            <!--<span id="millisecond">0</span>-->
         </section>
     </main>
 
-    <table id="finishers">
-        <tr>
-            <th>Runner</th>
-            <th>Time</th>
-        </tr>
-        <!--Populate with finishers as it goes on, when race is over populate with rest of seen runners and DNF-->
+    <table>
+        <thead>
+            <tr>
+                <th>Runner</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="finishers">
+
+            <!--Populate with finishers as it goes on, when race is over populate with rest of seen runners and DNF-->
+        </tbody>
     </table>
 
     <template id="finish-template">
@@ -35,7 +43,7 @@
                 <span class="hour">0</span>
                 <span class="minute">0</span>
                 <span class="second">0</span>
-                <span class="millisecond">0</span>
+                <!--<span class="millisecond">0</span>-->
             </td>
         </tr>
     </template>
